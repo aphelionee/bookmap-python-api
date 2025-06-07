@@ -11,39 +11,50 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class EventLoop implements Closeable {
 
-	private HandlerManager handlerManager;
-	private final BlockingQueue<AbstractEvent> events = new LinkedBlockingQueue<>();
-	private final AtomicBoolean isRun = new AtomicBoolean(true);
+        private HandlerManager handlerManager;
+        private final BlockingQueue<AbstractEvent> events = new LinkedBlockingQueue<>();
+        private final AtomicBoolean isRun = new AtomicBoolean(true);
+        private ExecutorService eventQueueReader;
 
-	public EventLoop() {
-		ExecutorService eventQueueReader = Executors.newSingleThreadExecutor();
-		eventQueueReader.execute(() -> {
-			try {
-				while (isRun.get()) {
-					AbstractEvent event = events.poll(10, TimeUnit.SECONDS);
-					if (event == null) {
-						continue;
-					}
-					this.handlerManager.handle(event);
-				}
-				RpcLogger.info("Event handler thread stopped...");
-			} catch (InterruptedException ex) {
-				RpcLogger.warn("Interrupted event loop thread", ex);
-			}
-		});
+        public EventLoop() {
 
-	}
+        }
+
+        private void startWorker() {
+                if (eventQueueReader != null) {
+                        return;
+                }
+                eventQueueReader = Executors.newSingleThreadExecutor();
+                eventQueueReader.execute(() -> {
+                        try {
+                                while (isRun.get()) {
+                                        AbstractEvent event = events.poll(10, TimeUnit.SECONDS);
+                                        if (event == null) {
+                                                continue;
+                                        }
+                                        handlerManager.handle(event);
+                                }
+                                RpcLogger.info("Event handler thread stopped...");
+                        } catch (InterruptedException ex) {
+                                RpcLogger.warn("Interrupted event loop thread", ex);
+                        }
+                });
+        }
 
 	public void pushEvent(AbstractEvent event) {
 		events.add(event);
 	}
 
-	@Override
-	public void close() throws IOException {
-		isRun.set(false);
-	}
+        @Override
+        public void close() throws IOException {
+                isRun.set(false);
+                if (eventQueueReader != null) {
+                        eventQueueReader.shutdownNow();
+                }
+        }
 
-	public void setHandlerManager(HandlerManager handlerManager) {
-		this.handlerManager = handlerManager;
-	}
+        public void setHandlerManager(HandlerManager handlerManager) {
+                this.handlerManager = handlerManager;
+                startWorker();
+        }
 }
