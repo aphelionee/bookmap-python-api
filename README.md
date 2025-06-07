@@ -13,6 +13,17 @@ for a step-by-step guide on how to use Python API.
 
 Also see the [examples](examples) directory for some examples of Python API usage.
 
+Some of the provided scripts include:
+
+- `hello_world.py` - minimal addon that prints messages when an instrument is subscribed.
+- `broadcasting_signals.py` - demonstrates broadcasting signals to Market Pulse.
+- `cvd_addon.py` - calculates cumulative volume delta.
+- `liquidity_tracker.py` - tracks resting liquidity on the order book.
+- `mbo_test.py` - showcases working with MBO data.
+- `order_book_test.py` - illustrates order book helpers.
+- `simple_market_maker.py` - naive market making strategy example.
+- `local_reversal_indicator.py` - highlights potential local price reversals.
+
 ## Technical requirements
 
 To run the addon only latest stable Bookmap version is required and Python >= 3.6 installed on the
