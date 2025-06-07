@@ -1413,3 +1413,8 @@ side = bm.get_order_side(mbo_order_book, order_id)
 ```
 
 This function returns order side, True if bid, otherwise False. Throw `ValueError` if there is no such order.
+
+### Data arrays
+
+You can maintain arrays of collected prices, volumes, or any other data using standard Python lists. These arrays help build custom indicators or export data for further analysis.
+
