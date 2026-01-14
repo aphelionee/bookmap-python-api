@@ -13,6 +13,13 @@ for a step-by-step guide on how to use Python API.
 
 Also see the [examples](examples) directory for some examples of Python API usage.
 
+Example scripts include:
+- `hello_world.py` – minimal starting point
+- `liquidity_tracker.py` – shows depth liquidity near the top of book
+- `broadcasting_signals.py` – demonstrates sending data between scripts
+- `simple_market_maker.py` – naive market making implementation
+- `local_reversal_indicator.py` – detects potential local reversals
+
 ## Technical requirements
 
 To run the addon only latest stable Bookmap version is required and Python >= 3.6 installed on the
